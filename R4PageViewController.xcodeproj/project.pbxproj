@@ -13,15 +13,14 @@
 		EC36D67617DCA7F500DB8698 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EC36D67417DCA7F500DB8698 /* InfoPlist.strings */; };
 		EC36D67817DCA7F500DB8698 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36D67717DCA7F500DB8698 /* main.m */; };
 		EC36D67C17DCA7F500DB8698 /* R4AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36D67B17DCA7F500DB8698 /* R4AppDelegate.m */; };
-		EC36D67F17DCA7F500DB8698 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC36D67D17DCA7F500DB8698 /* Main_iPhone.storyboard */; };
-		EC36D68217DCA7F500DB8698 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC36D68017DCA7F500DB8698 /* Main_iPad.storyboard */; };
-		EC36D68517DCA7F500DB8698 /* R4ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36D68417DCA7F500DB8698 /* R4ViewController.m */; };
 		EC36D68717DCA7F500DB8698 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC36D68617DCA7F500DB8698 /* Images.xcassets */; };
 		EC36D68E17DCA7F600DB8698 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC36D68D17DCA7F600DB8698 /* XCTest.framework */; };
 		EC36D68F17DCA7F600DB8698 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC36D66B17DCA7F500DB8698 /* Foundation.framework */; };
 		EC36D69017DCA7F600DB8698 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC36D66F17DCA7F500DB8698 /* UIKit.framework */; };
 		EC36D69817DCA7F600DB8698 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EC36D69617DCA7F600DB8698 /* InfoPlist.strings */; };
 		EC36D69A17DCA7F600DB8698 /* R4PageViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36D69917DCA7F600DB8698 /* R4PageViewControllerTests.m */; };
+		EC36D6A517DCA84300DB8698 /* R4PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36D6A417DCA84300DB8698 /* R4PageViewController.m */; };
+		EC36D6A917DCCEBB00DB8698 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC36D6A817DCCEBB00DB8698 /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,16 +44,15 @@
 		EC36D67917DCA7F500DB8698 /* R4PageViewController-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "R4PageViewController-Prefix.pch"; sourceTree = "<group>"; };
 		EC36D67A17DCA7F500DB8698 /* R4AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = R4AppDelegate.h; sourceTree = "<group>"; };
 		EC36D67B17DCA7F500DB8698 /* R4AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = R4AppDelegate.m; sourceTree = "<group>"; };
-		EC36D67E17DCA7F500DB8698 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
-		EC36D68117DCA7F500DB8698 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
-		EC36D68317DCA7F500DB8698 /* R4ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = R4ViewController.h; sourceTree = "<group>"; };
-		EC36D68417DCA7F500DB8698 /* R4ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = R4ViewController.m; sourceTree = "<group>"; };
 		EC36D68617DCA7F500DB8698 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		EC36D68C17DCA7F600DB8698 /* R4PageViewControllerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = R4PageViewControllerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC36D68D17DCA7F600DB8698 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		EC36D69517DCA7F600DB8698 /* R4PageViewControllerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "R4PageViewControllerTests-Info.plist"; sourceTree = "<group>"; };
 		EC36D69717DCA7F600DB8698 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EC36D69917DCA7F600DB8698 /* R4PageViewControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = R4PageViewControllerTests.m; sourceTree = "<group>"; };
+		EC36D6A317DCA84300DB8698 /* R4PageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = R4PageViewController.h; sourceTree = "<group>"; };
+		EC36D6A417DCA84300DB8698 /* R4PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = R4PageViewController.m; sourceTree = "<group>"; };
+		EC36D6A817DCCEBB00DB8698 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC36D6A917DCCEBB00DB8698 /* QuartzCore.framework in Frameworks */,
 				EC36D66E17DCA7F500DB8698 /* CoreGraphics.framework in Frameworks */,
 				EC36D67017DCA7F500DB8698 /* UIKit.framework in Frameworks */,
 				EC36D66C17DCA7F500DB8698 /* Foundation.framework in Frameworks */,
@@ -103,6 +102,7 @@
 		EC36D66A17DCA7F500DB8698 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EC36D6A817DCCEBB00DB8698 /* QuartzCore.framework */,
 				EC36D66B17DCA7F500DB8698 /* Foundation.framework */,
 				EC36D66D17DCA7F500DB8698 /* CoreGraphics.framework */,
 				EC36D66F17DCA7F500DB8698 /* UIKit.framework */,
@@ -116,10 +116,8 @@
 			children = (
 				EC36D67A17DCA7F500DB8698 /* R4AppDelegate.h */,
 				EC36D67B17DCA7F500DB8698 /* R4AppDelegate.m */,
-				EC36D67D17DCA7F500DB8698 /* Main_iPhone.storyboard */,
-				EC36D68017DCA7F500DB8698 /* Main_iPad.storyboard */,
-				EC36D68317DCA7F500DB8698 /* R4ViewController.h */,
-				EC36D68417DCA7F500DB8698 /* R4ViewController.m */,
+				EC36D6A317DCA84300DB8698 /* R4PageViewController.h */,
+				EC36D6A417DCA84300DB8698 /* R4PageViewController.m */,
 				EC36D68617DCA7F500DB8698 /* Images.xcassets */,
 				EC36D67217DCA7F500DB8698 /* Supporting Files */,
 			);
@@ -232,9 +230,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC36D68217DCA7F500DB8698 /* Main_iPad.storyboard in Resources */,
 				EC36D68717DCA7F500DB8698 /* Images.xcassets in Resources */,
-				EC36D67F17DCA7F500DB8698 /* Main_iPhone.storyboard in Resources */,
 				EC36D67617DCA7F500DB8698 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -256,7 +252,7 @@
 			files = (
 				EC36D67C17DCA7F500DB8698 /* R4AppDelegate.m in Sources */,
 				EC36D67817DCA7F500DB8698 /* main.m in Sources */,
-				EC36D68517DCA7F500DB8698 /* R4ViewController.m in Sources */,
+				EC36D6A517DCA84300DB8698 /* R4PageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,22 +281,6 @@
 				EC36D67517DCA7F500DB8698 /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		EC36D67D17DCA7F500DB8698 /* Main_iPhone.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				EC36D67E17DCA7F500DB8698 /* Base */,
-			);
-			name = Main_iPhone.storyboard;
-			sourceTree = "<group>";
-		};
-		EC36D68017DCA7F500DB8698 /* Main_iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				EC36D68117DCA7F500DB8698 /* Base */,
-			);
-			name = Main_iPad.storyboard;
 			sourceTree = "<group>";
 		};
 		EC36D69617DCA7F600DB8698 /* InfoPlist.strings */ = {
@@ -392,6 +372,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "R4PageViewController/R4PageViewController-Prefix.pch";
 				INFOPLIST_FILE = "R4PageViewController/R4PageViewController-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -405,6 +386,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "R4PageViewController/R4PageViewController-Prefix.pch";
 				INFOPLIST_FILE = "R4PageViewController/R4PageViewController-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -469,6 +451,7 @@
 				EC36D69F17DCA7F600DB8698 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		EC36D6A017DCA7F600DB8698 /* Build configuration list for PBXNativeTarget "R4PageViewControllerTests" */ = {
 			isa = XCConfigurationList;
@@ -477,6 +460,7 @@
 				EC36D6A217DCA7F600DB8698 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
