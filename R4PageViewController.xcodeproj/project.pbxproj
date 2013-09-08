@@ -14,24 +14,9 @@
 		EC36D67817DCA7F500DB8698 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36D67717DCA7F500DB8698 /* main.m */; };
 		EC36D67C17DCA7F500DB8698 /* R4AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36D67B17DCA7F500DB8698 /* R4AppDelegate.m */; };
 		EC36D68717DCA7F500DB8698 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC36D68617DCA7F500DB8698 /* Images.xcassets */; };
-		EC36D68E17DCA7F600DB8698 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC36D68D17DCA7F600DB8698 /* XCTest.framework */; };
-		EC36D68F17DCA7F600DB8698 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC36D66B17DCA7F500DB8698 /* Foundation.framework */; };
-		EC36D69017DCA7F600DB8698 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC36D66F17DCA7F500DB8698 /* UIKit.framework */; };
-		EC36D69817DCA7F600DB8698 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EC36D69617DCA7F600DB8698 /* InfoPlist.strings */; };
-		EC36D69A17DCA7F600DB8698 /* R4PageViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36D69917DCA7F600DB8698 /* R4PageViewControllerTests.m */; };
 		EC36D6A517DCA84300DB8698 /* R4PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36D6A417DCA84300DB8698 /* R4PageViewController.m */; };
 		EC36D6A917DCCEBB00DB8698 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC36D6A817DCCEBB00DB8698 /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		EC36D69117DCA7F600DB8698 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EC36D66017DCA7F500DB8698 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = EC36D66717DCA7F500DB8698;
-			remoteInfo = R4PageViewController;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		EC36D66817DCA7F500DB8698 /* R4PageViewController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = R4PageViewController.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -45,11 +30,7 @@
 		EC36D67A17DCA7F500DB8698 /* R4AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = R4AppDelegate.h; sourceTree = "<group>"; };
 		EC36D67B17DCA7F500DB8698 /* R4AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = R4AppDelegate.m; sourceTree = "<group>"; };
 		EC36D68617DCA7F500DB8698 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		EC36D68C17DCA7F600DB8698 /* R4PageViewControllerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = R4PageViewControllerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC36D68D17DCA7F600DB8698 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		EC36D69517DCA7F600DB8698 /* R4PageViewControllerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "R4PageViewControllerTests-Info.plist"; sourceTree = "<group>"; };
-		EC36D69717DCA7F600DB8698 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		EC36D69917DCA7F600DB8698 /* R4PageViewControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = R4PageViewControllerTests.m; sourceTree = "<group>"; };
 		EC36D6A317DCA84300DB8698 /* R4PageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = R4PageViewController.h; sourceTree = "<group>"; };
 		EC36D6A417DCA84300DB8698 /* R4PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = R4PageViewController.m; sourceTree = "<group>"; };
 		EC36D6A817DCCEBB00DB8698 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -67,16 +48,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EC36D68917DCA7F600DB8698 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EC36D68E17DCA7F600DB8698 /* XCTest.framework in Frameworks */,
-				EC36D69017DCA7F600DB8698 /* UIKit.framework in Frameworks */,
-				EC36D68F17DCA7F600DB8698 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -84,7 +55,6 @@
 			isa = PBXGroup;
 			children = (
 				EC36D67117DCA7F500DB8698 /* R4PageViewController */,
-				EC36D69317DCA7F600DB8698 /* R4PageViewControllerTests */,
 				EC36D66A17DCA7F500DB8698 /* Frameworks */,
 				EC36D66917DCA7F500DB8698 /* Products */,
 			);
@@ -94,7 +64,6 @@
 			isa = PBXGroup;
 			children = (
 				EC36D66817DCA7F500DB8698 /* R4PageViewController.app */,
-				EC36D68C17DCA7F600DB8698 /* R4PageViewControllerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -135,24 +104,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		EC36D69317DCA7F600DB8698 /* R4PageViewControllerTests */ = {
-			isa = PBXGroup;
-			children = (
-				EC36D69917DCA7F600DB8698 /* R4PageViewControllerTests.m */,
-				EC36D69417DCA7F600DB8698 /* Supporting Files */,
-			);
-			path = R4PageViewControllerTests;
-			sourceTree = "<group>";
-		};
-		EC36D69417DCA7F600DB8698 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				EC36D69517DCA7F600DB8698 /* R4PageViewControllerTests-Info.plist */,
-				EC36D69617DCA7F600DB8698 /* InfoPlist.strings */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -173,24 +124,6 @@
 			productReference = EC36D66817DCA7F500DB8698 /* R4PageViewController.app */;
 			productType = "com.apple.product-type.application";
 		};
-		EC36D68B17DCA7F600DB8698 /* R4PageViewControllerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = EC36D6A017DCA7F600DB8698 /* Build configuration list for PBXNativeTarget "R4PageViewControllerTests" */;
-			buildPhases = (
-				EC36D68817DCA7F600DB8698 /* Sources */,
-				EC36D68917DCA7F600DB8698 /* Frameworks */,
-				EC36D68A17DCA7F600DB8698 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				EC36D69217DCA7F600DB8698 /* PBXTargetDependency */,
-			);
-			name = R4PageViewControllerTests;
-			productName = R4PageViewControllerTests;
-			productReference = EC36D68C17DCA7F600DB8698 /* R4PageViewControllerTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -200,11 +133,6 @@
 				CLASSPREFIX = R4;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Srđan Rašić";
-				TargetAttributes = {
-					EC36D68B17DCA7F600DB8698 = {
-						TestTargetID = EC36D66717DCA7F500DB8698;
-					};
-				};
 			};
 			buildConfigurationList = EC36D66317DCA7F500DB8698 /* Build configuration list for PBXProject "R4PageViewController" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -220,7 +148,6 @@
 			projectRoot = "";
 			targets = (
 				EC36D66717DCA7F500DB8698 /* R4PageViewController */,
-				EC36D68B17DCA7F600DB8698 /* R4PageViewControllerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -232,14 +159,6 @@
 			files = (
 				EC36D68717DCA7F500DB8698 /* Images.xcassets in Resources */,
 				EC36D67617DCA7F500DB8698 /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EC36D68A17DCA7F600DB8698 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EC36D69817DCA7F600DB8698 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,37 +175,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EC36D68817DCA7F600DB8698 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EC36D69A17DCA7F600DB8698 /* R4PageViewControllerTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		EC36D69217DCA7F600DB8698 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = EC36D66717DCA7F500DB8698 /* R4PageViewController */;
-			targetProxy = EC36D69117DCA7F600DB8698 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		EC36D67417DCA7F500DB8698 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				EC36D67517DCA7F500DB8698 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		EC36D69617DCA7F600DB8698 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				EC36D69717DCA7F600DB8698 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -392,46 +287,6 @@
 			};
 			name = Release;
 		};
-		EC36D6A117DCA7F600DB8698 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/R4PageViewController.app/R4PageViewController";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "R4PageViewController/R4PageViewController-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "R4PageViewControllerTests/R4PageViewControllerTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		EC36D6A217DCA7F600DB8698 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/R4PageViewController.app/R4PageViewController";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "R4PageViewController/R4PageViewController-Prefix.pch";
-				INFOPLIST_FILE = "R4PageViewControllerTests/R4PageViewControllerTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -449,15 +304,6 @@
 			buildConfigurations = (
 				EC36D69E17DCA7F600DB8698 /* Debug */,
 				EC36D69F17DCA7F600DB8698 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		EC36D6A017DCA7F600DB8698 /* Build configuration list for PBXNativeTarget "R4PageViewControllerTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EC36D6A117DCA7F600DB8698 /* Debug */,
-				EC36D6A217DCA7F600DB8698 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
