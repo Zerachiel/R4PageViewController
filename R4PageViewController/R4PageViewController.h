@@ -11,10 +11,27 @@
 @class R4PageViewController;
 
 
+//! Default: [UIColor blackColor]
+extern NSString * const R4OptionFrontPageShadowColor;
 
-/* Implement this protocol to provide data
- * for R4PageViewController
- */
+//! Default: [NSNumber numberWithFloat:0.2]
+extern NSString * const R4OptionFrontPageShadowOpacity;
+
+//! Default: [NSNumber numberWithFloat:4]
+extern NSString * const R4OptionFrontPageShadowRadius;
+
+//! Default: [NSValue valueWithUIEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)]
+extern NSString * const R4OptionFrontPageInsets;
+
+//! Default: [NSNumber numberWithFloat:0.7]
+extern NSString * const R4OptionSidePagesSpaceDelayRate;
+
+//! Default: [NSNumber numberWithInteger:50]
+extern NSString * const R4OptionBorderPageMaxIndent;
+
+
+
+//! Implement this protocol to provide data for R4PageViewController.
 @protocol R4PageViewControllerDataSource <NSObject>
 
 @required
@@ -25,8 +42,7 @@
 
 
 
-/* Get informed of state changes through delegate
- */
+//! Get informed of state changes through delegate.
 @protocol R4PageViewControllerDelegate <NSObject>
 
 @optional
@@ -39,27 +55,16 @@
 
 
 
-/* R4PageViewController main class
- */
+//! R4PageViewController main class.
 @interface R4PageViewController : UIViewController
 
-/* Data source 
- */
+// Data source
 @property (weak, nonatomic) id<R4PageViewControllerDataSource> dataSource;
 @property (weak, nonatomic) id<R4PageViewControllerDelegate> delegate;
 @property (assign, nonatomic) NSInteger currentPage;
 
-/* Appearance 
- */
-@property (strong, nonatomic) UIColor *frontPageShadowColor;
-@property (assign, nonatomic) CGFloat frontPageShadowOpacity;
-@property (assign, nonatomic) UIEdgeInsets frontPageInsets;
-@property (assign, nonatomic) CGFloat sidePagesSpaceDelayRate;
-@property (assign, nonatomic) CGFloat borderPageMaxIndent;
-
-/* Methods
- */
-+ (id)new;
+// Methods
+- (id)initWithOptions:(NSDictionary *)options;
 - (void)reloadData;
 
 @end

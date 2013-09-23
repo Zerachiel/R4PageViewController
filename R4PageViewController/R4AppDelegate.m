@@ -66,11 +66,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   // Override point for customization after application launch.
-  R4PageViewController *pageViewController = [R4PageViewController new];
+  NSDictionary *options = @{R4OptionFrontPageInsets: [NSValue valueWithUIEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 10)],
+                            R4OptionFrontPageShadowOpacity: [NSNumber numberWithFloat:0.4],
+                            R4OptionFrontPageShadowRadius: [NSNumber numberWithFloat:4]};
+
+  R4PageViewController *pageViewController = [[R4PageViewController alloc] initWithOptions:options];
   pageViewController.dataSource = self;
   pageViewController.delegate = self;
-  pageViewController.frontPageInsets = UIEdgeInsetsMake(0, 10, 0, 10);
-  pageViewController.frontPageShadowOpacity = 0.7;
   
   self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   self.window.rootViewController = pageViewController;
@@ -86,7 +88,7 @@
 - (UIViewController *)pageViewController:(R4PageViewController *)pageViewController viewControllerForPage:(NSInteger)page
 {
   UIViewController *controller = [R4VC new];
-  UILabel *label = [[UILabel alloc] initWithFrame:controller.view.frame];
+  UILabel *label = [[UILabel alloc] initWithFrame:controller.view.bounds];
   label.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
   label.textAlignment = NSTextAlignmentCenter;
   label.text = [NSString stringWithFormat:@"This is page number %d", page];
