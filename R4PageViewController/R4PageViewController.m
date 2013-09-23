@@ -23,6 +23,13 @@ typedef void (^CompletionBlock)(void);
 @end
 
 
+/* Container view
+ */
+@interface R4PageContainerView : UIView
+@property (strong, nonatomic) UIViewController *viewController;
+@end
+
+
 /* Implements swiping mechanism
  */
 @interface R4SwipeGestureRecognizer : UIGestureRecognizer
@@ -42,9 +49,9 @@ typedef void (^CompletionBlock)(void);
 @interface R4PageViewController ()
 
 @property (assign, nonatomic) NSInteger numberOfPages;
-@property (strong, nonatomic) UIViewController *previousViewController;
-@property (strong, nonatomic) UIViewController *currentViewController;
-@property (strong, nonatomic) UIViewController *nextViewController;
+@property (strong, nonatomic) R4PageContainerView *previousViewContainer;
+@property (strong, nonatomic) R4PageContainerView *currentViewContainer;
+@property (strong, nonatomic) R4PageContainerView *nextViewContainer;
 @property (strong, nonatomic) R4SwipeGestureRecognizer *swipeGestureRecognizer;
 
 @end
@@ -69,17 +76,9 @@ typedef void (^CompletionBlock)(void);
 
 - (void)dealloc
 {
-  [self.currentViewController removeFromParentViewController];
-  [self.currentViewController.view removeFromSuperview];
-  self.currentViewController = nil;
-  
-  [self.previousViewController removeFromParentViewController];
-  [self.previousViewController.view removeFromSuperview];
-  self.previousViewController = nil;
-  
-  [self.nextViewController removeFromParentViewController];
-  [self.nextViewController.view removeFromSuperview];
-  self.nextViewController = nil;
+  self.previousViewContainer = nil;
+  self.currentViewContainer = nil;
+  self.nextViewContainer = nil;
 }
 
 - (void)initializePublicProperties
@@ -98,13 +97,6 @@ typedef void (^CompletionBlock)(void);
   self.currentPage = 2;
 }
 
-- (void)setCurrentViewController:(UIViewController *)currentViewController
-{
-  [self removeQuartzCoreEffects:_currentViewController.view];
-  [self applyQuartzCoreEffects:currentViewController.view];
-  _currentViewController = currentViewController;
-}
-
 - (void)setSidePagesSpaceDelayRate:(CGFloat)sidePagesSpaceDelayRate
 {
   _sidePagesSpaceDelayRate = MAX(0.5, MIN(1, sidePagesSpaceDelayRate));
@@ -114,10 +106,33 @@ typedef void (^CompletionBlock)(void);
 {
   [super viewDidLoad];
   self.view.backgroundColor = [UIColor whiteColor];
+  
+  [self loadContainerViews];
 
   /* This guy provides swiping mechanism */
 	self.swipeGestureRecognizer = [[R4SwipeGestureRecognizer alloc] initWithPageViewController:self];
   [self.view addGestureRecognizer:self.swipeGestureRecognizer];
+}
+
+- (void)loadContainerViews
+{
+  CGRect frame = self.view.bounds;
+  
+  self.previousViewContainer = [[R4PageContainerView alloc] initWithFrame:CGRectOffset(frame, -self.view.size.width, 0)];
+  [self.view addSubview:self.previousViewContainer];
+  
+  self.nextViewContainer = [[R4PageContainerView alloc] initWithFrame:CGRectOffset(frame, self.view.size.width, 0)];
+  [self.view addSubview:self.nextViewContainer];
+  
+  self.currentViewContainer = [[R4PageContainerView alloc] initWithFrame:frame];
+  self.currentViewContainer.backgroundColor = [UIColor redColor];
+  [self.view addSubview:self.currentViewContainer];
+}
+
+- (void)setPreviousViewContainer:(R4PageContainerView *)previousViewContainer
+{
+  _previousViewContainer = previousViewContainer;
+  previousViewContainer.viewController =
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -133,8 +148,8 @@ typedef void (^CompletionBlock)(void);
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-  if (self.currentViewController) {
-    return [self.currentViewController supportedInterfaceOrientations];
+  if (self.currentViewContainer.viewController) {
+    return [self.currentViewContainer.viewController supportedInterfaceOrientations];
   } else {
     return UIInterfaceOrientationMaskAll;
   }
@@ -142,8 +157,8 @@ typedef void (^CompletionBlock)(void);
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-  if (self.currentViewController) {
-    return [self.currentViewController shouldAutorotateToInterfaceOrientation:toInterfaceOrientation];
+  if (self.currentViewContainer.viewController) {
+    return [self.currentViewContainer.viewController shouldAutorotateToInterfaceOrientation:toInterfaceOrientation];
   } else {
     return YES;
   }
@@ -152,17 +167,17 @@ typedef void (^CompletionBlock)(void);
 - (void)viewWillLayoutSubviews
 {
   [super viewWillLayoutSubviews];
-  [self updateQuartzCoreEffects:self.currentViewController.view];
+  [self updateQuartzCoreEffects:self.currentViewContainer];
 }
 
 - (void)layoutForDragging
 {
-  [self.view bringSubviewToFront:self.currentViewController.view];
+  [self.view bringSubviewToFront:self.currentViewContainer];
 
   CGSize mySize = self.view.bounds.size;
-  self.previousViewController.view.frame = UIEdgeInsetsInsetRect(CGRectMake(-mySize.width * self.sidePagesSpaceDelayRate, 0, mySize.width, mySize.height), self.frontPageInsets);
-  self.nextViewController.view.frame = UIEdgeInsetsInsetRect(CGRectMake(mySize.width * self.sidePagesSpaceDelayRate, 0, mySize.width, mySize.height), self.frontPageInsets);
-  self.currentViewController.view.frame = UIEdgeInsetsInsetRect(CGRectMake(0, 0, mySize.width, mySize.height), self.frontPageInsets);
+  self.previousViewContainer.frame = UIEdgeInsetsInsetRect(CGRectMake(-mySize.width * self.sidePagesSpaceDelayRate, 0, mySize.width, mySize.height), self.frontPageInsets);
+  self.nextViewContainer.frame = UIEdgeInsetsInsetRect(CGRectMake(mySize.width * self.sidePagesSpaceDelayRate, 0, mySize.width, mySize.height), self.frontPageInsets);
+  self.currentViewContainer.frame = UIEdgeInsetsInsetRect(CGRectMake(0, 0, mySize.width, mySize.height), self.frontPageInsets);
 }
 
 - (void)updateQuartzCoreEffects:(UIView *)view
@@ -201,9 +216,9 @@ typedef void (^CompletionBlock)(void);
 
 - (void)fixScrollingToTop
 {
-  [self setViewHierarchy:self.currentViewController.view scrollsToTop:YES maxLevel:2];
-  [self setViewHierarchy:self.previousViewController.view scrollsToTop:NO maxLevel:2];
-  [self setViewHierarchy:self.nextViewController.view scrollsToTop:NO maxLevel:2];
+  [self setViewHierarchy:self.currentViewContainer.viewController.view scrollsToTop:YES maxLevel:2];
+  [self setViewHierarchy:self.previousViewContainer.viewController.view scrollsToTop:NO maxLevel:2];
+  [self setViewHierarchy:self.nextViewContainer.viewController.view scrollsToTop:NO maxLevel:2];
 }
 
 - (void)reloadData
@@ -212,77 +227,95 @@ typedef void (^CompletionBlock)(void);
   NSAssert(self.numberOfPages >= 0, @"Error: Number of pages in R4PageViewController < 0!");
   
   self.currentPage = MAX(0, MIN(self.numberOfPages - 1, self.currentPage));
-  [self setupForPage:self.currentPage];
+  //[self setupForPage:self.currentPage];
 }
 
-- (void)setupForPage:(NSInteger)page
+//- (void)setupForPage:(NSInteger)page
+//{
+//  self.currentViewController = [self viewControllerForPage:page];
+//  [self addChildViewController:self.currentViewController];
+//
+//  if (page > 0) {
+//    self.previousViewController = [self viewControllerForPage:page-1];
+//    [self addChildViewController:self.previousViewController];
+//  } else {
+//    self.previousViewController = nil;
+//  }
+//  
+//  if (page < self.numberOfPages - 1) {
+//    self.nextViewController = [self viewControllerForPage:page+1];
+//    [self addChildViewController:self.nextViewController];
+//  } else {
+//    self.nextViewController = nil;
+//  }
+//  
+//  self.currentPage = page;
+//  
+//  [self.view addSubview:self.previousViewController.view];
+//  [self.previousViewController didMoveToParentViewController:self];
+//  
+//  [self.view addSubview:self.nextViewController.view];
+//  [self.nextViewController didMoveToParentViewController:self];
+//  
+//  [self.view addSubview:self.currentViewController.view];
+//  [self.currentViewController didMoveToParentViewController:self];
+//  
+//  [self fixScrollingToTop];
+//  [self layoutForDragging];
+//}
+
+//- (void)shiftControllerHierarchyNext
+//{
+//  [self willScrollToPage:self.currentPage+1 toController:self.nextViewController];
+//
+//  self.currentPage++;
+//  
+//  [self.previousViewController.view removeFromSuperview];
+//  [self.previousViewController removeFromParentViewController];
+//  self.previousViewController = self.currentViewController;
+//  
+//  self.currentViewController = self.nextViewController;
+//  
+//  self.nextViewController = [self viewControllerForPage:self.currentPage+1];
+//  [self.view insertSubview:self.nextViewController.view belowSubview:self.currentViewController.view];
+//  
+//  [self fixScrollingToTop];
+//}
+//
+//- (void)shiftControllerHierarchyBack
+//{
+//  [self willScrollToPage:self.currentPage-1 toController:self.previousViewController];
+//  
+//  self.currentPage--;
+//  
+//  [self.nextViewController.view removeFromSuperview];
+//  [self.nextViewController removeFromParentViewController];
+//  self.nextViewController = self.currentViewController;
+//  
+//  self.currentViewController = self.previousViewController;
+//  
+//  self.previousViewController = [self viewControllerForPage:self.currentPage-1];
+//  [self.view insertSubview:self.previousViewController.view belowSubview:self.currentViewController.view];
+//  
+//  [self fixScrollingToTop];
+//}
+
+- (void)shiftContainersRight
 {
-  self.currentViewController = [self viewControllerForPage:page];
-  [self addChildViewController:self.currentViewController];
-
-  if (page > 0) {
-    self.previousViewController = [self viewControllerForPage:page-1];
-    [self addChildViewController:self.previousViewController];
-  } else {
-    self.previousViewController = nil;
-  }
-  
-  if (page < self.numberOfPages - 1) {
-    self.nextViewController = [self viewControllerForPage:page+1];
-    [self addChildViewController:self.nextViewController];
-  } else {
-    self.nextViewController = nil;
-  }
-  
-  self.currentPage = page;
-  
-  [self.view addSubview:self.previousViewController.view];
-  [self.previousViewController didMoveToParentViewController:self];
-  
-  [self.view addSubview:self.nextViewController.view];
-  [self.nextViewController didMoveToParentViewController:self];
-  
-  [self.view addSubview:self.currentViewController.view];
-  [self.currentViewController didMoveToParentViewController:self];
-  
-  [self fixScrollingToTop];
-  [self layoutForDragging];
-}
-
-- (void)shiftControllerHierarchyNext
-{
-  [self willScrollToPage:self.currentPage+1 toController:self.nextViewController];
-
   self.currentPage++;
-  
-  [self.previousViewController.view removeFromSuperview];
-  [self.previousViewController removeFromParentViewController];
-  self.previousViewController = self.currentViewController;
-  
-  self.currentViewController = self.nextViewController;
-  
-  self.nextViewController = [self viewControllerForPage:self.currentPage+1];
-  [self.view insertSubview:self.nextViewController.view belowSubview:self.currentViewController.view];
-  
-  [self fixScrollingToTop];
+  R4PageContainerView *temp = self.previousViewContainer;
+  self.previousViewContainer = self.currentViewContainer;
+  self.currentViewContainer = self.nextViewContainer;
+  self.nextViewContainer = temp;
 }
 
-- (void)shiftControllerHierarchyBack
+- (void)shiftContainersLeft
 {
-  [self willScrollToPage:self.currentPage-1 toController:self.previousViewController];
-  
   self.currentPage--;
-  
-  [self.nextViewController.view removeFromSuperview];
-  [self.nextViewController removeFromParentViewController];
-  self.nextViewController = self.currentViewController;
-  
-  self.currentViewController = self.previousViewController;
-  
-  self.previousViewController = [self viewControllerForPage:self.currentPage-1];
-  [self.view insertSubview:self.previousViewController.view belowSubview:self.currentViewController.view];
-  
-  [self fixScrollingToTop];
+  R4PageContainerView *temp = self.nextViewContainer;
+  self.nextViewContainer = self.currentViewContainer;
+  self.currentViewContainer = self.previousViewContainer;
+  self.previousViewContainer = temp;
 }
 
 - (void)animateToRest:(CompletionBlock)completion
@@ -348,6 +381,20 @@ typedef void (^CompletionBlock)(void);
 @end
 
 
+@implementation R4PageContainerView
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+  self = [super initWithFrame:frame];
+  if (self) {
+    self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+  }
+  return self;
+}
+
+@end
+
+
 @implementation R4SwipeGestureRecognizer
 
 - (id)initWithPageViewController:(R4PageViewController *)pageViewController
@@ -386,29 +433,29 @@ typedef void (^CompletionBlock)(void);
   } else if (self.state == UIGestureRecognizerStateBegan || self.state == UIGestureRecognizerStateChanged) {
     CFAbsoluteTime time = CFAbsoluteTimeGetCurrent();
     
-    CGFloat deltaX = location.x - self.previousTouchPoint.x;
+    CGFloat deltaX = location.x - self.previousTouchPoint.x; NSLog(@"%f", deltaX);
     CFAbsoluteTime deltaT = time - self.previousTouchTime;
     
-    UIView *view = self.pageViewController.currentViewController.view;
+    UIView *view = self.pageViewController.currentViewContainer;
     view.origin = CGPointMake(view.origin.x + deltaX, view.origin.y);
     
-    view = self.pageViewController.previousViewController.view;
+    view = self.pageViewController.previousViewContainer;
     view.origin = CGPointMake(view.origin.x + deltaX * self.pageViewController.sidePagesSpaceDelayRate, view.origin.y);
     
-    view = self.pageViewController.nextViewController.view;
+    view = self.pageViewController.nextViewContainer;
     view.origin = CGPointMake(view.origin.x + deltaX * self.pageViewController.sidePagesSpaceDelayRate, view.origin.y);
     
     self.velocity = deltaX / deltaT;
     self.previousTouchPoint = location;
     self.previousTouchTime = CFAbsoluteTimeGetCurrent();
     
-    if (self.pageViewController.currentPage == 0 && self.pageViewController.currentViewController.view.origin.x > self.pageViewController.borderPageMaxIndent) {
-      self.pageViewController.currentViewController.view.origin = CGPointMake(self.pageViewController.borderPageMaxIndent, self.pageViewController.currentViewController.view.origin.y);
-    } else if (self.pageViewController.currentPage == self.pageViewController.numberOfPages-1 && self.pageViewController.currentViewController.view.origin.x < -self.pageViewController.borderPageMaxIndent) {
-      self.pageViewController.currentViewController.view.origin = CGPointMake(-self.pageViewController.borderPageMaxIndent, self.pageViewController.currentViewController.view.origin.y);
+    if (self.pageViewController.currentPage == 0 && self.pageViewController.currentViewContainer.origin.x > self.pageViewController.borderPageMaxIndent) {
+      self.pageViewController.currentViewContainer.origin = CGPointMake(self.pageViewController.borderPageMaxIndent, self.pageViewController.currentViewContainer.origin.y);
+    } else if (self.pageViewController.currentPage == self.pageViewController.numberOfPages-1 && self.pageViewController.currentViewContainer.origin.x < -self.pageViewController.borderPageMaxIndent) {
+      self.pageViewController.currentViewContainer.origin = CGPointMake(-self.pageViewController.borderPageMaxIndent, self.pageViewController.currentViewContainer.origin.y);
     }
     
-    [self.pageViewController didScrollToOffset:self.pageViewController.currentViewController.view.frame.origin.x];
+    [self.pageViewController didScrollToOffset:self.pageViewController.currentViewContainer.frame.origin.x];
     
     self.state = UIGestureRecognizerStateChanged;
   }
@@ -419,21 +466,21 @@ typedef void (^CompletionBlock)(void);
   if (self.state == UIGestureRecognizerStateBegan || self.state == UIGestureRecognizerStateChanged) {
     BOOL pageChanged = NO;
     
-    UIView *curentVCView = self.pageViewController.currentViewController.view;
+    UIView *curentVCView = self.pageViewController.currentViewContainer;
     if (curentVCView.origin.x > curentVCView.size.width / 2 && self.pageViewController.currentPage > 0) {
-      [self.pageViewController shiftControllerHierarchyBack];
+      [self.pageViewController shiftContainersLeft];
       pageChanged = YES;
     } else if (curentVCView.origin.x < -curentVCView.size.width / 2 && self.pageViewController.currentPage < self.pageViewController.numberOfPages-1) {
-      [self.pageViewController shiftControllerHierarchyNext];
+      [self.pageViewController shiftContainersRight];
       pageChanged = YES;
     } else if (ABS(self.velocity) > 500) {
       if (self.velocity < 0) {
         if (self.pageViewController.currentPage < self.pageViewController.numberOfPages-1) {
-          [self.pageViewController shiftControllerHierarchyNext];
+          [self.pageViewController shiftContainersRight];
           pageChanged = YES;
         }
       } else if (self.pageViewController.currentPage > 0) {
-        [self.pageViewController shiftControllerHierarchyBack];
+        [self.pageViewController shiftContainersLeft];
         pageChanged = YES;
       }
     }
@@ -441,7 +488,7 @@ typedef void (^CompletionBlock)(void);
     [self.pageViewController animateToRest:^{
       self.state = UIGestureRecognizerStateEnded;
       if (pageChanged) {
-        [self.pageViewController didScrollToPage:self.pageViewController.currentPage toController:self.pageViewController.currentViewController];
+        [self.pageViewController didScrollToPage:self.pageViewController.currentPage toController:self.pageViewController.currentViewContainer.viewController];
       }
     }];
   } else {
