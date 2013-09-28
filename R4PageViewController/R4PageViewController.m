@@ -85,6 +85,26 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   self.nextViewContainer = nil;
 }
 
+- (BOOL)automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers
+{
+  return NO;
+}
+
+- (BOOL)shouldAutomaticallyForwardAppearanceMethods
+{
+  return NO;
+}
+
+- (BOOL)shouldAutomaticallyForwardRotationMethods
+{
+  return NO;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+  [super viewDidAppear:animated];
+}
+
 #pragma mark - Properties
 
 - (void)initializePrivateProperties
@@ -153,12 +173,18 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   return [indent floatValue];
 }
 
+- (UIViewController *)currentViewController
+{
+  return self.currentViewContainer.viewController;
+}
+
 #pragma mark - View handling
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
   self.view.backgroundColor = [UIColor whiteColor];
+  self.view.layer.masksToBounds = YES;
   
   [self loadContainerViews];
 
@@ -182,19 +208,27 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
-  [self reloadData];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
   [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
   [self removeQuartzCoreEffects:self.currentViewContainer];
+  
+  [self.currentViewContainer.viewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+  [self.previousViewContainer.viewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+  [self.nextViewContainer.viewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
+  [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
   [self applyQuartzCoreEffects:self.currentViewContainer];
   [self layoutForDragging];
+  
+  [self.currentViewContainer.viewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+  [self.previousViewContainer.viewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+  [self.nextViewContainer.viewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
 
 - (NSUInteger)supportedInterfaceOrientations
@@ -280,7 +314,7 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   self.currentPage = MAX(0, MIN(self.numberOfPages - 1, self.currentPage));
   
   if (self.numberOfPages > 0) {
-    self.currentViewContainer.viewController = [self viewControllerForPage:self.currentPage+1];
+    self.currentViewContainer.viewController = [self viewControllerForPage:self.currentPage];
     
     if (self.currentPage > 0) {
       self.previousViewContainer.viewController = [self viewControllerForPage:self.currentPage-1];
@@ -422,11 +456,12 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   
   _viewController = viewController;
   
+  [parentViewController addChildViewController:_viewController];
+  
   _viewController.view.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
   _viewController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   [self addSubview:_viewController.view];
 
-  [parentViewController addChildViewController:_viewController];
   [_viewController didMoveToParentViewController:parentViewController];
 }
 

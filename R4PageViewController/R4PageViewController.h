@@ -58,9 +58,9 @@ extern NSString * const R4OptionBorderPageMaxIndent;
 //! R4PageViewController main class.
 @interface R4PageViewController : UIViewController
 
-// Data source
 @property (weak, nonatomic) id<R4PageViewControllerDataSource> dataSource;
 @property (weak, nonatomic) id<R4PageViewControllerDelegate> delegate;
+@property (strong, nonatomic, readonly) UIViewController *currentViewController;
 @property (assign, nonatomic) NSInteger currentPage;
 
 // Methods
