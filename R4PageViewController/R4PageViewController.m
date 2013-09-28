@@ -59,6 +59,7 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
 @property (strong, nonatomic) R4PageContainerView *previousViewContainer;
 @property (strong, nonatomic) R4PageContainerView *currentViewContainer;
 @property (strong, nonatomic) R4PageContainerView *nextViewContainer;
+@property (strong, nonatomic) UIViewController *needsAppearanceUpdateViewController;
 @property (strong, nonatomic) R4SwipeGestureRecognizer *swipeGestureRecognizer;
 
 @property (strong, nonatomic) NSMutableDictionary *options;
@@ -160,7 +161,7 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
     delay = [NSNumber numberWithFloat:0.7];
     [self.options setObject:delay forKey:R4OptionSidePagesSpaceDelayRate];
   }
-  return MAX(0.5, MIN(1, [delay floatValue]));
+  return MAX(0.5, MIN(1.5, [delay floatValue]));
 }
 
 - (CGFloat)borderPageMaxIndent
@@ -295,11 +296,14 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   view.layer.shadowPath = nil;
 }
 
-- (void)animateToRest:(CompletionBlock)completion
+- (void)animateToRestAndMakeAppearanceUpdates:(CompletionBlock)completion
 {
   [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
     [self layoutForDragging];
   } completion:^(BOOL finished) {
+    [self.needsAppearanceUpdateViewController endAppearanceTransition];
+    self.needsAppearanceUpdateViewController = nil;
+    [self.currentViewContainer.viewController endAppearanceTransition];
     completion();
   }];
 }
@@ -333,6 +337,10 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   self.currentPage++;
   R4PageContainerView *previousViewContainer = self.previousViewContainer;
   
+  [self.currentViewContainer.viewController beginAppearanceTransition:NO animated:YES];
+  [self.nextViewContainer.viewController beginAppearanceTransition:YES animated:YES];
+  self.needsAppearanceUpdateViewController = self.currentViewContainer.viewController;
+  
   self.previousViewContainer = self.currentViewContainer;
   self.currentViewContainer = self.nextViewContainer;
   self.nextViewContainer = previousViewContainer;
@@ -349,6 +357,10 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   self.currentPage--;
   
   R4PageContainerView *nextViewContainer = self.nextViewContainer;
+  
+  [self.currentViewContainer.viewController beginAppearanceTransition:NO animated:YES];
+  [self.previousViewContainer.viewController beginAppearanceTransition:YES animated:YES];
+  self.needsAppearanceUpdateViewController = self.currentViewContainer.viewController;
   
   self.nextViewContainer = self.currentViewContainer;
   self.currentViewContainer = self.previousViewContainer;
@@ -556,7 +568,7 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
       }
     }
     
-    [self.pageViewController animateToRest:^{
+    [self.pageViewController animateToRestAndMakeAppearanceUpdates:^{
       self.state = UIGestureRecognizerStateEnded;
       if (pageChanged) {
         [self.pageViewController didScrollToPage:self.pageViewController.currentPage toController:self.pageViewController.currentViewContainer.viewController];
