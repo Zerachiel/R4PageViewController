@@ -49,6 +49,22 @@ extern NSString * const R4OptionSidePagesSpaceDelayRate;
 //! Default: [NSNumber numberWithInteger:50]
 extern NSString * const R4OptionBorderPageMaxIndent;
 
+//! Default: [NSNumber numberWithInteger:R4PreloadLevelPreload]
+extern NSString * const R4OptionPreloadLevel;
+
+
+typedef enum {
+  
+  //! Load previous/next when needed (when revealing starts). Release when not needed. Keeps only current view controller in memory.
+  R4PreloadLevelLoadAndRelease,
+  
+  //! Load previous/next when needed (when revealing starts) and keep cached while they stay being previous/current/next.
+  R4PreloadLevelLoadAndKeep,
+  
+  //! Preload previous and next view controller. Previous, current and next view controller are always cached in memory.
+  R4PreloadLevelPreload
+  
+} R4PreloadLevel;
 
 
 //! Implement this protocol to provide data for R4PageViewController.
@@ -88,6 +104,4 @@ extern NSString * const R4OptionBorderPageMaxIndent;
 - (void)reloadData;
 
 @end
-
-
 

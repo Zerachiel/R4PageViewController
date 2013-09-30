@@ -69,7 +69,7 @@
   NSDictionary *options = @{R4OptionFrontPageInsets: [NSValue valueWithUIEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 10)],
                             R4OptionFrontPageShadowOpacity: [NSNumber numberWithFloat:0.4],
                             R4OptionFrontPageShadowRadius: [NSNumber numberWithFloat:4],
-                            R4OptionSidePagesSpaceDelayRate: [NSNumber numberWithFloat:1.0]};
+                            R4OptionSidePagesSpaceDelayRate: [NSNumber numberWithFloat:0.7]};
 
   R4PageViewController *pageViewController = [[R4PageViewController alloc] initWithOptions:options];
   pageViewController.dataSource = self;

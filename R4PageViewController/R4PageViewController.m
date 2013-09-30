@@ -40,6 +40,7 @@ NSString * const R4OptionFrontPageShadowRadius = @"R4OptionFrontPageShadowRadius
 NSString * const R4OptionFrontPageInsets = @"R4OptionFrontPageInsets";
 NSString * const R4OptionSidePagesSpaceDelayRate = @"R4OptionSidePagesSpaceDelayRate";
 NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
+NSString * const R4OptionPreloadLevel = @"R4OptionPreloadLevel";
 
 
 /* UIView+Position helper
@@ -59,7 +60,7 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
 
 /* Implements swiping mechanism
  */
-@interface R4SwipeGestureRecognizer : UIGestureRecognizer
+@interface R4SwipeGestureRecognizer : UIGestureRecognizer <UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) R4PageViewController *pageViewController;
 @property (assign, nonatomic) CGPoint previousTouchPoint;
@@ -84,6 +85,8 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
 
 @property (strong, nonatomic) NSMutableDictionary *options;
 
+@property (assign, nonatomic) BOOL isAnimatingToRest;
+
 @end
 
 
@@ -95,6 +98,16 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
     [self initializePrivateProperties];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.layer.masksToBounds = YES;
+    
+    [self loadContainerViews];
+    
+    /* This guy provides swiping mechanism */
+    self.swipeGestureRecognizer = [[R4SwipeGestureRecognizer alloc] initWithPageViewController:self];
+    [self.view addGestureRecognizer:self.swipeGestureRecognizer];
+    
   }
   return self;
 }
@@ -130,6 +143,7 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
 
 - (void)initializePrivateProperties
 {
+  self.isAnimatingToRest = NO;
   self.wantsFullScreenLayout = YES;
   self.currentPage = 0;
 }
@@ -194,6 +208,16 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   return [indent floatValue];
 }
 
+- (R4PreloadLevel)preloadLevel
+{
+  NSNumber *level = [self.options objectForKey:R4OptionPreloadLevel];
+  if (!level) {
+    level = [NSNumber numberWithInt:R4PreloadLevelPreload];
+    [self.options setObject:level forKey:R4OptionPreloadLevel];
+  }
+  return [level integerValue];
+}
+
 - (UIViewController *)currentViewController
 {
   return self.currentViewContainer.viewController;
@@ -204,14 +228,6 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  self.view.backgroundColor = [UIColor whiteColor];
-  self.view.layer.masksToBounds = YES;
-  
-  [self loadContainerViews];
-
-  /* This guy provides swiping mechanism */
-	self.swipeGestureRecognizer = [[R4SwipeGestureRecognizer alloc] initWithPageViewController:self];
-  [self.view addGestureRecognizer:self.swipeGestureRecognizer];
 }
 
 - (void)loadContainerViews
@@ -278,8 +294,9 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
 
 - (void)layoutForDragging
 {
-  [self.view bringSubviewToFront:self.currentViewContainer];
-
+  [self.view sendSubviewToBack:self.previousViewContainer];
+  [self.view sendSubviewToBack:self.nextViewContainer];
+  
   CGSize mySize = self.view.bounds.size;
   self.previousViewContainer.frame = UIEdgeInsetsInsetRect(CGRectMake(-mySize.width * self.sidePagesSpaceDelayRate, 0, mySize.width, mySize.height), self.frontPageInsets);
   self.nextViewContainer.frame = UIEdgeInsetsInsetRect(CGRectMake(mySize.width * self.sidePagesSpaceDelayRate, 0, mySize.width, mySize.height), self.frontPageInsets);
@@ -318,14 +335,43 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
 
 - (void)animateToRestAndMakeAppearanceUpdates:(CompletionBlock)completion
 {
-  [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+  self.isAnimatingToRest = YES;
+  [UIView animateWithDuration:0.185 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
     [self layoutForDragging];
   } completion:^(BOOL finished) {
-    [self.needsAppearanceUpdateViewController endAppearanceTransition];
-    self.needsAppearanceUpdateViewController = nil;
-    [self.currentViewContainer.viewController endAppearanceTransition];
+    
+    // if for some reason not properly ended, try again
+    if (ABS(self.currentViewContainer.origin.x - [self frontPageInsets].left) > 1.0) {
+      [self animateToRestAndMakeAppearanceUpdates:completion];
+      return;
+    }
+    
+    self.isAnimatingToRest = NO;
+    
+    if ([self preloadLevel] == R4PreloadLevelLoadAndRelease) {
+      self.previousViewContainer.viewController = self.nextViewContainer.viewController = nil;
+    }
+    
+    if (self.needsAppearanceUpdateViewController) {
+      [self.needsAppearanceUpdateViewController endAppearanceTransition];
+      self.needsAppearanceUpdateViewController = nil;
+      [self.currentViewContainer.viewController endAppearanceTransition];
+    }
+    
     completion();
   }];
+  
+  [NSTimer scheduledTimerWithTimeInterval:0.005 target:self selector:@selector(simulateDidScroll:) userInfo:nil repeats:YES];
+}
+
+- (void)simulateDidScroll:(id)timer
+{
+  if (self.isAnimatingToRest) {
+    [self didScrollToOffset:[self.currentViewContainer.layer.presentationLayer frame].origin.x];
+  } else {
+    [self didScrollToOffset:self.currentViewContainer.frame.origin.x];
+    [timer invalidate];
+  }
 }
 
 #pragma mark - Data handling
@@ -340,20 +386,22 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   if (self.numberOfPages > 0) {
     self.currentViewContainer.viewController = [self viewControllerForPage:self.currentPage];
     
-    if (self.currentPage > 0) {
+    if ([self preloadLevel] == R4PreloadLevelPreload && self.currentPage > 0) {
       self.previousViewContainer.viewController = [self viewControllerForPage:self.currentPage-1];
     }
     
-    if (self.currentPage < self.numberOfPages - 1) {
+    if ([self preloadLevel] == R4PreloadLevelPreload && self.currentPage < self.numberOfPages - 1) {
       self.nextViewContainer.viewController = [self viewControllerForPage:self.currentPage+1];
     }
   }
+  
+  [self fixScrollingToTop];
 }
 
 - (void)shiftContainersRight
 {
   [self willScrollToPage:self.currentPage+1 toController:self.nextViewContainer.viewController];
-
+  
   self.currentPage++;
   R4PageContainerView *previousViewContainer = self.previousViewContainer;
   
@@ -365,15 +413,19 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   self.currentViewContainer = self.nextViewContainer;
   self.nextViewContainer = previousViewContainer;
   
-  self.nextViewContainer.viewController = [self viewControllerForPage:self.currentPage+1];
+  if ([self preloadLevel] == R4PreloadLevelPreload) {
+    [self loadNextViewController];
+  } else if ([self preloadLevel] == R4PreloadLevelLoadAndKeep) {
+    self.nextViewContainer.viewController = nil;
+  }
   
   [self fixScrollingToTop];
 }
 
 - (void)shiftContainersLeft
 {
-  [self willScrollToPage:self.currentPage+1 toController:self.nextViewContainer.viewController];
-
+  [self willScrollToPage:self.currentPage-1 toController:self.nextViewContainer.viewController];
+  
   self.currentPage--;
   
   R4PageContainerView *nextViewContainer = self.nextViewContainer;
@@ -386,9 +438,23 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   self.currentViewContainer = self.previousViewContainer;
   self.previousViewContainer = nextViewContainer;
   
-  self.previousViewContainer.viewController = [self viewControllerForPage:self.currentPage-1];
+  if ([self preloadLevel] == R4PreloadLevelPreload) {
+    [self loadPreviousViewController];
+  } else if ([self preloadLevel] == R4PreloadLevelLoadAndKeep) {
+    self.previousViewContainer.viewController = nil;
+  }
   
   [self fixScrollingToTop];
+}
+
+- (void)loadPreviousViewController
+{
+  self.previousViewContainer.viewController = [self viewControllerForPage:self.currentPage-1];
+}
+
+- (void)loadNextViewController
+{
+  self.nextViewContainer.viewController = [self viewControllerForPage:self.currentPage+1];
 }
 
 #pragma mark - Helper methods
@@ -493,7 +559,7 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   _viewController.view.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
   _viewController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   [self addSubview:_viewController.view];
-
+  
   [_viewController didMoveToParentViewController:parentViewController];
 }
 
@@ -516,7 +582,7 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   UITouch *touch = [touches anyObject];
   self.previousTouchPoint = [touch locationInView:self.view];
   self.previousTouchTime = CFAbsoluteTimeGetCurrent();
-  self.state = UIGestureRecognizerStatePossible;
+  self.state = (self.previousTouchPoint.x > 20) ? UIGestureRecognizerStatePossible : UIGestureRecognizerStateFailed;
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
@@ -525,11 +591,19 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
   CGPoint location = [touch locationInView:self.view];
   
   if (self.state == UIGestureRecognizerStatePossible) {
-    CGFloat dx = ABS(location.x - self.previousTouchPoint.x);
-    CGFloat dy = ABS(location.y - self.previousTouchPoint.y);
+    CGFloat dx = location.x - self.previousTouchPoint.x;
+    CGFloat dy = location.y - self.previousTouchPoint.y;
     
-    if (dx > dy) {
+    if (ABS(dx) > ABS(dy)) {
       self.state = UIGestureRecognizerStateBegan;
+      
+      // load view controllers
+      if (dx > 0 && !self.pageViewController.previousViewContainer.viewController) {
+        [self.pageViewController loadPreviousViewController];
+      } else if (dx < 0 && !self.pageViewController.nextViewContainer.viewController){
+        [self.pageViewController loadNextViewController];
+      }
+      
     } else {
       self.state = UIGestureRecognizerStateFailed;
     }
@@ -541,6 +615,13 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
     
     UIView *view = self.pageViewController.currentViewContainer;
     view.origin = CGPointMake(view.origin.x + deltaX, view.origin.y);
+    
+    // load view controllers
+    if (view.origin.x > 0 && !self.pageViewController.previousViewContainer.viewController) {
+      [self.pageViewController loadPreviousViewController];
+    } else if (view.origin.x < 0 && !self.pageViewController.nextViewContainer.viewController){
+      [self.pageViewController loadNextViewController];
+    }
     
     view = self.pageViewController.previousViewContainer;
     view.origin = CGPointMake(view.origin.x + deltaX * self.pageViewController.sidePagesSpaceDelayRate, view.origin.y);
@@ -576,7 +657,7 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
     } else if (curentVCView.origin.x < -curentVCView.size.width / 2 && self.pageViewController.currentPage < self.pageViewController.numberOfPages-1) {
       [self.pageViewController shiftContainersRight];
       pageChanged = YES;
-    } else if (ABS(self.velocity) > 500) {
+    } else if (ABS(self.velocity) > 1000) {
       if (self.velocity < 0) {
         if (self.pageViewController.currentPage < self.pageViewController.numberOfPages-1) {
           [self.pageViewController shiftContainersRight];
@@ -596,6 +677,15 @@ NSString * const R4OptionBorderPageMaxIndent = @"R4OptionBorderPageMaxIndent";
     }];
   } else {
     self.state = UIGestureRecognizerStateCancelled;
+  }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+  if (self.state == UIGestureRecognizerStateBegan || self.state == UIGestureRecognizerStateChanged) {
+    return NO;
+  } else {
+    return YES;
   }
 }
 
